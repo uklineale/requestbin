@@ -2,6 +2,7 @@ package main
 
 import(
 	"io/ioutil"
+	"net/http"
 )
 
 const FileExtension = ".txt"
@@ -23,5 +24,15 @@ func loadBin(id string) (*Bin, error) {
 		return nil, err
 	}
 	return &Bin{Id: id, Requests: requests}, nil
+}
+
+func (bin *Bin) appendRequest(r *http.Request) error {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+
+	bin.Requests = append(bin.Requests[:], body[:]...)
+	return nil
 }
 
