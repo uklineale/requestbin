@@ -9,7 +9,7 @@ import (
 
 const BinEndpoint = "/bin/"
 const RequestEndpoint = "/bin/data/" 
-const CreateEndpoint = "/create"
+const CreateEndpoint = "/create/"
 const IdLength = 16
 
 
@@ -34,7 +34,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Path[len(BinEndpoint) + len(RequestEndpoint):]
+	id := r.URL.Path[len(RequestEndpoint):]
 	bin, err := loadBin(id)
 	if err != nil {
 		fmt.Fprintf(w, "<h1>%s</h1>", "404 Not found")
@@ -42,10 +42,12 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bin.appendRequest(r)
 	bin.save()
+
+	fmt.Fprintf(w, "{\"success\": true}")
 }
 
 func main() {
-	fmt.Println("Starting server")
+	fmt.Println("Starting server on port 8080")
 	http.HandleFunc(BinEndpoint, loadHandler)
 	http.HandleFunc(RequestEndpoint, requestHandler)
 	http.HandleFunc(CreateEndpoint, createHandler)

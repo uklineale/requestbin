@@ -27,12 +27,9 @@ func loadBin(id string) (*Bin, error) {
 }
 
 func (bin *Bin) appendRequest(r *http.Request) error {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
+	method := r.Method + "\n"	
 
-	bin.Requests = append(bin.Requests[:], body[:]...)
+	bin.Requests = append(bin.Requests[:], method...)
 	return nil
 }
 
