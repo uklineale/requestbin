@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"github.com/uklineale/go-randutils"
 )
 
@@ -46,10 +47,31 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "{\"success\": true}")
 }
 
+// Hello world
+// TODO Make home page
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+	}
+	fmt.Fprint(w, "Hello, World!")
+}
+
 func main() {
-	fmt.Println("Starting server on port 8080")
+
+	port := os.Getenv("PORT")
+	log.Printf("Starting server on port %s", port)
+
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	
 	http.HandleFunc(BinEndpoint, loadHandler)
 	http.HandleFunc(RequestEndpoint, requestHandler)
 	http.HandleFunc(CreateEndpoint, createHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	http.HandleFunc("/", indexHandler)
+
+	log.Fatal(http.ListenAndServe(":" + port, nil))
 }

@@ -28,8 +28,10 @@ func loadBin(id string) (*Bin, error) {
 
 func (bin *Bin) appendRequest(r *http.Request) error {
 	method := r.Method + "\n"	
+	srcIp := r.Header["X-Forwarded-For"][0]
 
 	bin.Requests = append(bin.Requests[:], method...)
+	bin.Requests = append(bin.Requests[:], srcIp...)
 	return nil
 }
 
