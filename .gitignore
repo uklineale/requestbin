@@ -1,4 +1,4 @@
 *.txt
 requestbin
-.terraform
+.terraform/
 .tfstate
